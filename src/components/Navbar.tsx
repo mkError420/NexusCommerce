@@ -98,6 +98,17 @@ export default function Navbar({ cartCount, onCartClick, onLoginClick, onLogoutC
                         <p className="text-sm font-bold text-gray-900 truncate">{user.displayName}</p>
                         <p className="text-xs text-gray-500 truncate">{user.email}</p>
                       </div>
+                      {user.role === 'admin' && (
+                        <button 
+                          onClick={() => {
+                            onNavigate('admin');
+                            setIsUserMenuOpen(false);
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-emerald-600 hover:bg-emerald-50 transition-colors font-bold"
+                        >
+                          Admin Dashboard
+                        </button>
+                      )}
                       <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 transition-colors">My Orders</button>
                       <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 transition-colors">Settings</button>
                       <button 
@@ -151,6 +162,9 @@ export default function Navbar({ cartCount, onCartClick, onLoginClick, onLogoutC
               <button onClick={() => handleNavClick('shop')} className="block w-full text-left px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-md font-medium">Shop</button>
               <button onClick={() => handleNavClick('categories')} className="block w-full text-left px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-md font-medium">Categories</button>
               <button onClick={() => handleNavClick('deals')} className="block w-full text-left px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-md font-medium">Deals</button>
+              {user?.role === 'admin' && (
+                <button onClick={() => handleNavClick('admin')} className="block w-full text-left px-3 py-2 text-emerald-600 hover:bg-emerald-50 rounded-md font-bold">Admin Dashboard</button>
+              )}
               {!user && (
                 <button 
                   onClick={onLoginClick}

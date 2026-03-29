@@ -9,6 +9,7 @@ import DealsView from './components/DealsView';
 import Cart from './components/Cart';
 import Footer from './components/Footer';
 import CheckoutModal from './components/CheckoutModal';
+import AdminDashboard from './components/AdminDashboard';
 import { Product, CartItem } from './types';
 import { MOCK_PRODUCTS } from './constants';
 import { ShoppingBag, ArrowRight, Zap, Shield, Truck, Star } from 'lucide-react';
@@ -161,6 +162,10 @@ export default function App() {
         </div>
       </div>
     );
+  }
+
+  if (currentView === 'admin' && user?.role === 'admin') {
+    return <AdminDashboard onBack={() => setCurrentView('home')} />;
   }
 
   return (
