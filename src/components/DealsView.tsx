@@ -10,7 +10,7 @@ interface DealsViewProps {
 }
 
 export default function DealsView({ products, onProductClick, onAddToCart }: DealsViewProps) {
-  const dealProducts = products.filter(p => p.discountPrice && p.price && p.discountPrice < p.price);
+  const dealProducts = products.filter(p => p && p.discountPrice && p.price && p.discountPrice < p.price);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">

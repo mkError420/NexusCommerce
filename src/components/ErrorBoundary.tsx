@@ -23,7 +23,12 @@ export default class ErrorBoundary extends (React.Component as any) {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('Uncaught error:', error, errorInfo);
+    console.error('Uncaught error caught by ErrorBoundary:', error);
+    console.error('Error Info:', errorInfo);
+    // Log additional context if available
+    if (error.stack) {
+      console.error('Error Stack:', error.stack);
+    }
   }
 
   render() {

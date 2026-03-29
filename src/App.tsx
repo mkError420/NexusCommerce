@@ -160,9 +160,12 @@ export default function App() {
   };
 
   const filteredProducts = products.filter(p => {
+    if (!p) return false;
     const matchesCategory = activeCategory === 'All' || p.category === activeCategory;
-    const matchesSearch = (p.name?.toLowerCase() || '').includes(searchQuery.toLowerCase()) || 
-                          (p.description?.toLowerCase() || '').includes(searchQuery.toLowerCase());
+    const name = p.name || '';
+    const description = p.description || '';
+    const matchesSearch = name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          description.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 

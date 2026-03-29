@@ -33,12 +33,15 @@ export default function ShopView({
   const selectedCategory = externalCategory !== undefined ? externalCategory : internalCategory;
   const setSelectedCategory = onCategoryChange || setInternalCategory;
 
-  const categories = ['All', ...new Set(products.map(p => p.category))];
+  const categories = ['All', ...new Set(products.filter(p => p && p.category).map(p => p.category))];
 
   const filteredProducts = products
     .filter(p => {
-      const matchesSearch = (p.name?.toLowerCase() || '').includes(searchQuery.toLowerCase()) || 
-                           (p.description?.toLowerCase() || '').includes(searchQuery.toLowerCase());
+      if (!p) return false;
+      const name = p.name || '';
+      const description = p.description || '';
+      const matchesSearch = name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                           description.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesCategory = selectedCategory === 'All' || p.category === selectedCategory;
       return matchesSearch && matchesCategory;
     })

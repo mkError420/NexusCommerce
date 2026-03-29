@@ -8,6 +8,7 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, onAddToCart }: ProductCardProps) {
+  if (!product) return null;
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}

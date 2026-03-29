@@ -9,6 +9,7 @@ interface ProductDetailsProps {
 }
 
 export default function ProductDetails({ product, onAddToCart, onBack }: ProductDetailsProps) {
+  if (!product) return null;
   return (
     <motion.div
       initial={{ opacity: 0 }}
