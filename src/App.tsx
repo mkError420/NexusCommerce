@@ -10,6 +10,7 @@ import Cart from './components/Cart';
 import Footer from './components/Footer';
 import CheckoutModal from './components/CheckoutModal';
 import AdminDashboard from './components/AdminDashboard';
+import { seedProducts } from './seed';
 import { Product, CartItem } from './types';
 import { MOCK_PRODUCTS } from './constants';
 import { ShoppingBag, ArrowRight, Zap, Shield, Truck, Star } from 'lucide-react';
@@ -42,6 +43,7 @@ export default function App() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
+  const [isSeeding, setIsSeeding] = useState(false);
 
   // Auth Listener
   useEffect(() => {
@@ -172,6 +174,15 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleSeed = async () => {
+    if (window.confirm('This will seed the database with initial products. Continue?')) {
+      setIsSeeding(true);
+      await seedProducts();
+      setIsSeeding(false);
+      alert('Seeding complete! The products should appear shortly.');
+    }
+  };
+
   if (loading) {
     return (
       <div className="h-screen w-full flex items-center justify-center bg-gray-50">
@@ -229,6 +240,19 @@ export default function App() {
       />
 
       <main className="pt-16">
+        {/* Seed Button (Visible only to admin or for initial setup) */}
+        {products.length === 0 && !loading && (
+          <div className="fixed bottom-8 right-8 z-50">
+            <button 
+              onClick={handleSeed}
+              disabled={isSeeding}
+              className="px-6 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-all shadow-xl shadow-blue-200 disabled:opacity-50"
+            >
+              {isSeeding ? 'Seeding...' : 'Seed Initial Products'}
+            </button>
+          </div>
+        )}
+
         <AnimatePresence mode="wait">
           {selectedProduct ? (
             <motion.div
