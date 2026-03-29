@@ -22,6 +22,7 @@ import {
   collection, 
   onSnapshot, 
   doc, 
+  getDoc,
   setDoc, 
   addDoc, 
   serverTimestamp,
@@ -45,20 +46,38 @@ export default function App() {
   // Auth Listener
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setUser(currentUser);
       if (currentUser) {
-        // Sync user to Firestore
         const userRef = doc(db, 'users', currentUser.uid);
         try {
-          await setDoc(userRef, {
-            email: currentUser.email,
-            displayName: currentUser.displayName,
-            photoURL: currentUser.photoURL,
-            role: 'customer' // Default role
-          }, { merge: true });
+          const userDoc = await getDoc(userRef);
+          let userData = userDoc.exists() ? userDoc.data() : null;
+          
+          const isAdminEmail = currentUser.email === "mk.rabbani.cse@gmail.com";
+          const defaultRole = isAdminEmail ? 'admin' : 'customer';
+
+          if (!userData) {
+            userData = {
+              email: currentUser.email,
+              displayName: currentUser.displayName,
+              photoURL: currentUser.photoURL,
+              role: defaultRole
+            };
+            await setDoc(userRef, userData);
+          } else if (isAdminEmail && userData.role !== 'admin') {
+            // Force admin role for the specific email if it's not set
+            userData.role = 'admin';
+            await setDoc(userRef, { role: 'admin' }, { merge: true });
+          }
+
+          setUser({ uid: currentUser.uid, ...userData });
         } catch (error) {
+          console.error('Error syncing user:', error);
           handleFirestoreError(error, OperationType.WRITE, 'users/' + currentUser.uid);
+          // Fallback to basic auth user if Firestore fails
+          setUser(currentUser);
         }
+      } else {
+        setUser(null);
       }
       setLoading(false);
     });
